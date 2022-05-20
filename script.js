@@ -20,69 +20,74 @@ function computerPlay() {
     return computerSelection;
 }
 
+//function to get user selection
+function userPlay() {
+    let playerSelection = prompt("Please type rock, paper or scissors below.").toLowerCase();
+    //Want to verify user input, but not working yet... (playerSelection != "rock" && playerSelection != "paper" && playerSelection != "scissors")  //check to make sure it's a real choice  
+    return playerSelection;  
+}
 
-// This function will play 1 round of rock paper scissors
-function playRound (playerSelection, computerSelection) {
-    let roundSummary;           // The text summary
-    let playerScore = 0;        //Keep track of who won
-    let computerScore = 0;
+
+// This function will play 1 round of rock paper scissors and return the winner, player or computer
+function playRound () {
+    let playerSelection = userPlay();
+    console.log("Player selects:", playerSelection);
+    let computerSelection = computerPlay();
+    console.log("Computer selects:", computerSelection);
+    let roundWinner;           // Output the round winner
+    
     if (playerSelection == computerSelection) {
-        roundSummary = "It's a tie!";
+        roundWinner = "It's a tie! Choose again!";
     } else if (playerSelection == "rock") {
         if (computerSelection == "paper") {
-            roundSummary = "You lose! Paper covers Rock!";
-           computerScore = 1; 
+            roundWinner = "computer"; 
         } else if (computerSelection == "scissors") {
-            roundSummary = "You win! Rock beats Scissors!";
-            playerScore = 1;
+            roundWinner = "player";
         }
     } else if (playerSelection == "paper") {
         if (computerSelection == "scissors") {
-            roundSummary = "You lose! Scissors cut Paper!"; 
-            computerScore = 1;
-         } else if (computerSelection == "rock") {
-            roundSummary = "You win! Paper covers Rock!";
-             playerScore = 1;
-         }
+            roundWinner = "computer"
+        } else if (computerSelection == "rock") {
+            roundWinner = "player";
+        }
     } else if (playerSelection == "scissors") {
         if (computerSelection == "rock") {
-            roundSummary = "You lose! Rock beats Scissors!"; 
-            computerScore = 1;
-         } else if (computerSelection == "paper") {
-            roundSummary = "You win! Scissors cut Paper!";
-             playerScore = 1;
-         }
+            roundWinner = "computer"; 
+        } else if (computerSelection == "paper") {
+            roundWinner = "player";
+        }
     }
-    return [roundSummary, playerScore, computerScore]; //export as array
+    return roundWinner;
 }
     
-//A function to get computer and player selections easily
-function selections() {
-    computerSelection = computerPlay(); //use the function already written
-    let playerSelection = prompt("Please type rock, paper or scissors below.").toLowerCase();
-    // (playerSelection != "rock" && playerSelection != "paper" && playerSelection != "scissors")  //check to make sure it's a real choice  
-    return [playerSelection, computerSelection];  
-}
-
+//Use the other functions to run a bunch of rounds and keep track of overall score
 function game(rounds) {
     let playerGameScore = 0;
     let computerGameScore = 0;
     let gameResult;
+    let gameWinner;
     for (let i = 0; i < rounds; i++) {
-        let playerSelection = selections()[0];
-        let computerSelection = selections()[0];
-        roundResults = playRound(playerSelection, computerSelection);
-        console.log(roundResults[0]);
-        playerGameScore = playerGameScore + roundResults[1];
-        computerGameScore = computerGameScore + roundResults[2]; 
+        winner = playRound();
+        if (winner == "player") {
+            playerGameScore++;
+        } else if (winner == "computer") {
+            computerGameScore++;
+        } else {
+            i--;        //if it's a tie, it doesn't count as a round so the loop will run again
+        }
+        console.log("Winner:",winner);
     }
-    if (playerGameScore == computerGameScore) {
-        gameResult = `It's a tie! The final score was ${playerGameScore} to ${computerGameScore}`;
-    } else if (playerGameScore > computerGameScore) {
-        gameResult = `You win! The final score was ${playerGameScore} to ${computerGameScore}`;
-    } else if (playerGameScore < computerGameScore) {
-        gameResult = `You lose! The final score was ${computerGameScore} to ${playerGameScore}`;
+    if (playerGameScore > computerGameScore) {
+        gameWinner = "You win!";
+    } else if (computerGameScore > playerGameScore) {
+        gameWinner = "You Lose!";
     }
+    
+    let score1 = Math.max(playerGameScore, computerGameScore);
+    let score2 = Math.min(playerGameScore, computerGameScore);
+
+    gameResult = `${gameWinner} The final score was ${score1} to ${score2}`
+
     return gameResult
 }
 
